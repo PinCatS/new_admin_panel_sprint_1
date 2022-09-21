@@ -1,10 +1,10 @@
 import sqlite3
 
+import config
 import psycopg2
 from psycopg2.extensions import connection as _connection
 from psycopg2.extras import DictCursor
 
-import config
 from dataimporter.models import (
     FilmWork,
     Genre,
@@ -13,7 +13,7 @@ from dataimporter.models import (
     PersonFilmWork,
 )
 from dataimporter.postgres_saver import PostgresSaver
-from dataimporter.sqllite_extractor import SQLiteExtractor, sqlite_conn_context
+from dataimporter.sqlite_extractor import SQLiteExtractor, sqlite_conn_context
 
 
 def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):

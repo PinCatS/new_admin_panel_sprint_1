@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 
 from sqlite_to_postgres import config
-from sqlite_to_postgres.dataimporter.sqllite_extractor import (
+from sqlite_to_postgres.dataimporter.sqlite_extractor import (
     sqlite_conn_context,
 )
 
