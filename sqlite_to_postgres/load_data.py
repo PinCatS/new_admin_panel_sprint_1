@@ -37,4 +37,14 @@ if __name__ == '__main__':
     ) as sqlite_conn, psycopg2.connect(
         **config.DATABASE, cursor_factory=DictCursor
     ) as pg_conn:
-        load_from_sqlite(sqlite_conn, pg_conn)
+        try:
+            load_from_sqlite(sqlite_conn, pg_conn)
+        except psycopg2.Error as err:
+            print('Ошибка PostgreSQL во время импортирования данных.')
+            print(err.pgerror)
+        except sqlite3.Error as err:
+            print('Ошибка SQLite во время выгрузки данных.')
+            print(err)
+        except Exception as err:
+            print('Ошибка работы скрипта.')
+            print(err)
