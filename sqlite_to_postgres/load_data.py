@@ -1,9 +1,7 @@
-import pprint
 import sqlite3
 import uuid
 from contextlib import contextmanager
-from dataclasses import asdict, dataclass, field, fields
-from email.policy import default
+from dataclasses import asdict, dataclass, field
 from string import Template
 from typing import List
 
@@ -162,7 +160,10 @@ class PostgresSaver:
         args = [asdict(genre) for genre in data]
         execute_batch(
             self.curs,
-            "EXECUTE table_insert (NOW(), NOW(), %(id)s, %(name)s, %(description)s)",
+            (
+                'EXECUTE table_insert '
+                '(NOW(), NOW(), %(id)s, %(name)s, %(description)s)'
+            ),
             args,
             page_size=batch_size,
         )
@@ -171,7 +172,7 @@ class PostgresSaver:
         args = [asdict(person) for person in data]
         execute_batch(
             self.curs,
-            "EXECUTE table_insert (NOW(), NOW(), %(id)s, %(full_name)s)",
+            'EXECUTE table_insert ' '(NOW(), NOW(), %(id)s, %(full_name)s)',
             args,
             page_size=batch_size,
         )
@@ -180,7 +181,11 @@ class PostgresSaver:
         args = [asdict(film_work) for film_work in data]
         execute_batch(
             self.curs,
-            "EXECUTE table_insert (NOW(), NOW(), %(id)s, %(title)s, %(description)s, %(creation_date)s, %(rating)s, %(type)s, %(file_path)s)",
+            (
+                'EXECUTE table_insert '
+                '(NOW(), NOW(), %(id)s, %(title)s, %(description)s, '
+                '%(creation_date)s, %(rating)s, %(type)s, %(file_path)s)'
+            ),
             args,
             page_size=batch_size,
         )
@@ -191,7 +196,10 @@ class PostgresSaver:
         args = [asdict(person_film_work) for person_film_work in data]
         execute_batch(
             self.curs,
-            "EXECUTE table_insert (%(id)s, %(role)s, NOW(), %(film_work_id)s, %(person_id)s)",
+            (
+                'EXECUTE table_insert '
+                '(%(id)s, %(role)s, NOW(), %(film_work_id)s, %(person_id)s)'
+            ),
             args,
             page_size=batch_size,
         )
@@ -200,7 +208,10 @@ class PostgresSaver:
         args = [asdict(genre_film_work) for genre_film_work in data]
         execute_batch(
             self.curs,
-            "EXECUTE table_insert (%(id)s, NOW(), %(film_work_id)s, %(genre_id)s)",
+            (
+                'EXECUTE table_insert '
+                '(%(id)s, NOW(), %(film_work_id)s, %(genre_id)s)'
+            ),
             args,
             page_size=batch_size,
         )
