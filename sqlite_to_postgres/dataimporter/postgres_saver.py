@@ -18,11 +18,6 @@ def pg_conn_context(dsn: Dict, cursor_factory):
 
 
 class PostgresSaver:
-    @dataclass(frozen=True)
-    class Queries:
-        prepare: str
-        insert: str
-
     _camel_2_snake_case = re.compile(r'(?<!^)(?=[A-Z])')
     _schema_info = None
 
