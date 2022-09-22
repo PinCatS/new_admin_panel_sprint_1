@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-16 16:14+0000\n"
+"POT-Creation-Date: 2022-09-22 08:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: movies/admin.py:18 movies/admin.py:46
+msgid "-empty-"
+msgstr ""
 
 #: movies/apps.py:8
 msgid "movies"
@@ -54,11 +58,11 @@ msgstr "genre"
 msgid "genres"
 msgstr "genres"
 
-#: movies/models.py:32
+#: movies/models.py:31
 msgid "movie"
 msgstr "movie"
 
-#: movies/models.py:33
+#: movies/models.py:32
 msgid "tv show"
 msgstr "tv show"
 
@@ -67,13 +71,37 @@ msgid "creation date"
 msgstr "creation date"
 
 #: movies/models.py:40
+msgid "file"
+msgstr ""
+
+#: movies/models.py:43
 msgid "rating"
 msgstr "rating"
 
-#: movies/models.py:48
+#: movies/models.py:47
+msgid "type"
+msgstr ""
+
+#: movies/models.py:53
 msgid "film work"
 msgstr "film work"
 
-#: movies/models.py:49
+#: movies/models.py:54
 msgid "film works"
 msgstr "film works"
+
+#: movies/models.py:80
+msgid "actor"
+msgstr ""
+
+#: movies/models.py:81
+msgid "producer"
+msgstr ""
+
+#: movies/models.py:82
+msgid "director"
+msgstr ""
+
+#: movies/models.py:89
+msgid "role"
+msgstr ""

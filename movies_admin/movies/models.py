@@ -44,7 +44,7 @@ class Filmwork(UUIDMixin, TimeStampedMixin):
         default=0.0,
         validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
-    type = models.CharField('тип', choices=FilmType.choices, max_length=64)
+    type = models.CharField(_('type'), choices=FilmType.choices, max_length=64)
     genres = models.ManyToManyField(Genre, through='GenreFilmwork')
     person = models.ManyToManyField(Person, through='PersonFilmwork')
 
@@ -76,10 +76,21 @@ class GenreFilmwork(UUIDMixin):
         ]
 
 
+class Role(models.TextChoices):
+    ACTOR = 'actor', _('actor')
+    PRODUCER = 'producer', _('producer')
+    DIRECTOR = 'director', _('director')
+
+
 class PersonFilmwork(UUIDMixin):
     film_work = models.ForeignKey(Filmwork, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
-    role = models.TextField('role', null=True)
+    role = models.CharField(
+        _('role'),
+        choices=Role.choices,
+        max_length=64,
+        null=True,
+    )
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:

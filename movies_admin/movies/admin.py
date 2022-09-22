@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
 
 from .models import Filmwork, Genre, GenreFilmwork, Person, PersonFilmwork
 
@@ -14,7 +15,7 @@ class GenreAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'created', 'modified')
     list_filter = ('name',)
     search_fields = ('id',)
-    empty_value_display = '-пусто-'
+    empty_value_display = _('-empty-')
 
 
 class PersonFilmworkInline(admin.TabularInline):
@@ -42,4 +43,4 @@ class FilmworkAdmin(admin.ModelAdmin):
     )
     list_filter = ('type',)
     search_fields = ('title', 'description', 'id')
-    empty_value_display = '-пусто-'
+    empty_value_display = _('-empty-')

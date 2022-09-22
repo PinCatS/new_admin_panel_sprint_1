@@ -1,10 +1,20 @@
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
+from typing import Dict
 
+import psycopg2
 from psycopg2.extensions import connection as _connection
-from psycopg2.extras import execute_batch
+from psycopg2.extras import DictCursor, execute_batch
 
 from .models import FilmWork, Genre, GenreFilmWork, Person, PersonFilmWork
+
+
+@contextmanager
+def pg_conn_context(dsn: Dict, cursor_factory):
+    conn = psycopg2.connect(**dsn, cursor_factory=DictCursor)
+    with conn:
+        yield conn
+    conn.close()
 
 
 class PostgresSaver:
@@ -25,7 +35,7 @@ class PostgresSaver:
             insert=(
                 (
                     'EXECUTE table_insert '
-                    '(NOW(), NOW(), %(id)s, %(name)s, %(description)s)'
+                    '(%(created)s, %(modified)s, %(id)s, %(name)s, %(description)s)'
                 )
             ),
         ),
@@ -38,7 +48,8 @@ class PostgresSaver:
                 'ON CONFLICT (full_name) DO NOTHING'
             ),
             insert=(
-                'EXECUTE table_insert ' '(NOW(), NOW(), %(id)s, %(full_name)s)'
+                'EXECUTE table_insert '
+                '(%(created)s, %(modified)s, %(id)s, %(full_name)s)'
             ),
         ),
         FilmWork.__name__: Queries(
@@ -52,7 +63,7 @@ class PostgresSaver:
             ),
             insert=(
                 'EXECUTE table_insert '
-                '(NOW(), NOW(), %(id)s, %(title)s, %(description)s, '
+                '(%(created)s, %(modified)s, %(id)s, %(title)s, %(description)s, '
                 '%(creation_date)s, %(rating)s, %(type)s, %(file_path)s)'
             ),
         ),
@@ -66,7 +77,7 @@ class PostgresSaver:
             ),
             insert=(
                 'EXECUTE table_insert '
-                '(%(id)s, %(role)s, NOW(), %(film_work_id)s, %(person_id)s)'
+                '(%(id)s, %(role)s, %(created)s, %(film_work_id)s, %(person_id)s)'
             ),
         ),
         GenreFilmWork.__name__: Queries(
@@ -78,7 +89,7 @@ class PostgresSaver:
             ),
             insert=(
                 'EXECUTE table_insert '
-                '(%(id)s, NOW(), %(film_work_id)s, %(genre_id)s)'
+                '(%(id)s, %(created)s, %(film_work_id)s, %(genre_id)s)'
             ),
         ),
     }

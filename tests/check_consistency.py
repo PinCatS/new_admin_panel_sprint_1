@@ -3,7 +3,6 @@ import sqlite3
 import sys
 from string import Template
 
-import psycopg2
 from psycopg2.extensions import connection as _connection
 from psycopg2.extras import DictCursor
 
@@ -11,7 +10,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 
 from sqlite_to_postgres import config
+from sqlite_to_postgres.dataimporter.postgres_saver import pg_conn_context
 from sqlite_to_postgres.dataimporter.sqlite_extractor import (
+    SQLiteExtractor,
     sqlite_conn_context,
 )
 
@@ -49,18 +50,11 @@ def test_tables_values(sqlite_curs, pg_curs):
     )
 
     queries = {
-        "genre": (
-            "SELECT id, name, "
-            "CASE WHEN description IS NULL THEN '' "
-            "ELSE description END description FROM genre;"
-        ),
+        "genre": ("SELECT id, name, description FROM genre;"),
         "person": "SELECT id, full_name FROM person",
         "film_work": (
-            "SELECT id, title, CASE WHEN description IS NULL THEN '' "
-            "ELSE description END description, "
-            "creation_date, file_path, "
-            "CASE WHEN rating IS NULL THEN 0.0 ELSE rating END rating, "
-            "type FROM film_work;"
+            "SELECT id, title, description, creation_date, file_path, "
+            "rating, type FROM film_work;"
         ),
         "person_film_work": (
             "SELECT id, film_work_id, person_id, role FROM person_film_work"
@@ -73,8 +67,8 @@ def test_tables_values(sqlite_curs, pg_curs):
     for table in tables:
         sqlite_curs.execute(queries[table])
         pg_curs.execute(queries[table])
-        sqlite_rows = map(dict, sqlite_curs.fetchall())
-        pg_rows = map(dict, pg_curs.fetchall())
+        sqlite_rows = map(SQLiteExtractor.transform, sqlite_curs.fetchall())
+        pg_rows = map(SQLiteExtractor.transform, pg_curs.fetchall())
         for sqlite_row, pg_row in zip(sqlite_rows, pg_rows):
             for sqlite_item, pg_item in zip(
                 sqlite_row.items(), pg_row.items()
@@ -100,7 +94,7 @@ def check_consistency(connection: sqlite3.Connection, pg_conn: _connection):
 if __name__ == "__main__":
     with sqlite_conn_context(
         config.SQLITE_DB, read_only=True
-    ) as sqlite_conn, psycopg2.connect(
-        **config.DATABASE, cursor_factory=DictCursor
+    ) as sqlite_conn, pg_conn_context(
+        config.DATABASE, cursor_factory=DictCursor
     ) as pg_conn:
         check_consistency(sqlite_conn, pg_conn)
